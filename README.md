@@ -7,6 +7,10 @@ This project arises as a way to discover authors and books to read with my frien
 Phrase-Line use [Ebooklib](https://github.com/aerkalov/ebooklib) from aerkalov.
 
 ___
+### Setup
+Punkt from NLTK Data is needed. This can't be install via pip.
+You can install it runing: python3 -m nltk.downloader punkt
 
+___
 ## License
 Phrase-Line is licensed under the APACHE license, Version 2.0.
