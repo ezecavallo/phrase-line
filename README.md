@@ -9,4 +9,4 @@ Phrase-Line use [Ebooklib](https://github.com/aerkalov/ebooklib) from aerkalov.
 ___
 
 ## License
-Phrase-Line is licensed under the AGPL license.
+Phrase-Line is licensed under the APACHE license, Version 2.0.
