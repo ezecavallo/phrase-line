@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="static/css/master.css">
+        <title>Test-Page</title>
+    </head>
+    <body>
+        <div id="box">
+            <div id="container">
+                <h1 class="title">GOETHE</h1>
+                <form id="form" method="post">
+                    <button type="submit" name="button">ELIGE UNO</button>
+                </form>
+            </div>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+        <script type="text/javascript">
+        $(document).ready(function() {
+            $(document).submit(function (event) {
+                    event.preventDefault()
+                    $.get("/ajax/", function (data) {
+                        $( "#box" ).hide().html( data ).fadeIn('500');
+                });
+            });
+        });
+        </script>
+    </body>
+</html>
