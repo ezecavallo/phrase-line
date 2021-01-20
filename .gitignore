@@ -137,8 +137,6 @@ dmypy.json
 
 # Credentials
 .json
-=======
->>>>>>> 7e17e790a678b85226380fc293fb72c556b37c6d
 
 # Databases
 .db
