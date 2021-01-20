@@ -133,10 +133,10 @@ dmypy.json
 <<<<<<< HEAD
 /books-test
 /sentences-app-libros
-.epub
+*.epub
 
 # Credentials
-.json
+*.json
 
 # Databases
-.db
+*.db

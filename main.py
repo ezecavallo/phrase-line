@@ -32,15 +32,12 @@ def charge():
 @app.route('/show/', methods=['GET'])
 def show():
     """Call phrase funtion."""
-<<<<<<< HEAD
     sentence = Sentence(random_book())
-    text = [sentence.sentence, sentence.author]
-=======
-    text = phrase(random_book())
->>>>>>> 7e17e790a678b85226380fc293fb72c556b37c6d
+    text = [sentence.sentence,  sentence.title, sentence.author]
     return render_template("show.html",
                            sentence=text[0],
-                           author=text[1]
+                           title=text[1],
+                           author=text[2]
                            )
 
 

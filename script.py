@@ -8,7 +8,6 @@ import nltk
 from app.database import db
 from app.models import Book
 from sqlalchemy.sql.expression import func, select
-<<<<<<< HEAD
 
 
 class Sentence():
@@ -37,8 +36,6 @@ class Sentence():
 def random_book():
     book = db.session.query(Book).order_by(func.random()).first()
     return book
-=======
->>>>>>> 7e17e790a678b85226380fc293fb72c556b37c6d
 
 
 def get_ebooks():
@@ -94,14 +91,11 @@ def epub_to_html(epub_path):
         db.session.commit()
         print('Guardado')
     else:
-<<<<<<< HEAD
         print('Already in')
-=======
         str = nltk.sent_tokenize(query.content)
         ret = random.choice(str)
         print(ret)
         return ret
->>>>>>> 7e17e790a678b85226380fc293fb72c556b37c6d
 
 
 def charge_books():
@@ -121,12 +115,10 @@ def to_text(html):
     # decoder = str.decode('utf-8')
     soup = BeautifulSoup(str, 'html.parser')
     for tag in soup.find_all(("p")):
-<<<<<<< HEAD
+
         if len(tag.text) > 4:
             to_parse.append(tag.text)
-=======
         to_parse.append(tag.text)
->>>>>>> 7e17e790a678b85226380fc293fb72c556b37c6d
 
     parsed = list(filter(None, to_parse))
     joined = ''.join(parsed)
