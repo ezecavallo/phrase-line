@@ -3,3 +3,4 @@ wheel==0.36.2
 git+ssh://git@github.com/ezecavallo/testing-ebooklib.git
 nltk==3.5
 beautifulsoup4==4.9.1
+Flask-Sqlalchemy

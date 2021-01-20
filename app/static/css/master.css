@@ -58,38 +58,37 @@ li a:hover{
 }
 #container {
     font-family: 'Voga Medium';
-    margin: auto;
-    display: block;
-    align-content: center;
-    max-width: 800px;
-    padding-top: 100px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
 }
 .book {
-    max-width: 800px;
-    margin: auto;
-    top: 0;
     background-repeat: no-repeat;
     background-size: contain;
-    height: 100%;
     background-position: top;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
 }
 .title{
     letter-spacing: -10px;
     font-family: "Bahnschrift Con";
-    margin-top: 0;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 0px;
-    position: relative;
+    margin: 0;
     font-size: 180px;
-    font-weight: bold;
+    width: 625px;
     font-style: normal;
     text-align: center;
     color: white;  /* Fallback: assume this color ON TOP of image */
     background: url(../img/GOETHE.png) no-repeat;
-    background-position-x: -25px;
+    background-position-x: -125px;
     background-position-y: -25px;
-    background-size: contain;
+    background-size: cover;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -128,11 +127,10 @@ button:hover{
     font-style: italic;
     font-weight: normal;
     font-size: 22px;
-    padding-top: 200px;
     text-align: justify;
     color: #000;
 }
-.author {
+.metadata {
     text-align: right;
     font-family: 'Bell MT';
     color: #000;

@@ -5,96 +5,139 @@ from ebooklib import epub
 from bs4 import BeautifulSoup
 import re
 import nltk
+from app.database import db
+from app.models import Book
+from sqlalchemy.sql.expression import func, select
+<<<<<<< HEAD
+
+
+class Sentence():
+    """Class model for Sentence"""
+
+    def __init__(self, object):
+        self.sentence = self.get_sentences(object.content)
+        self.title = object.title
+        self.author = object.author
+
+    def get_sentences(self, text):
+        sentences = nltk.sent_tokenize(text)
+        return self.random_phrase(sentences)
+
+    def random_phrase(self, sentences):
+        sentence = random.choice(sentences)
+        if len(sentence) < 15:
+            return self.random_phrase(sentences)
+        else:
+            return sentence
+
+    def __str__(self):
+        return f'{self.sentence} in {self.title} by {self.author}'
+
+
+def random_book():
+    book = db.session.query(Book).order_by(func.random()).first()
+    return book
+=======
+>>>>>>> 7e17e790a678b85226380fc293fb72c556b37c6d
 
 
 def get_ebooks():
     """Return path with a random book from the main folder."""
-    path = "Libros/"
+    path = "books-test/"
     books = []
 
     for root, dirs, files in os.walk(path, topdown=False):
         for name in files:
             books.append(os.path.join(root, name))
     ebookspath = random.choice(books)
-    return ebookspath
+    return books
+
+
+def random_book():
+    book = db.session.query(Book).order_by(func.random()).first()
+    return book
 
 
 def epub_to_html(epub_path):
     """
     Get html from epub books.
     This function search for all html items inside the .zip/.epub
-    Then select a random .html, get its content and return it.
+    Verify if the book already exist in database,
+    if not create without exception list.
     """
     global author, title
     book = epub.read_epub(epub_path)
 
     title = "".join(book.get_metadata('DC', 'title'))
     author = "".join(book.get_metadata('DC', 'creator'))
-    chapters = []
-    text = []
-    exception_list = ['Text/cubierta.xhtml', 'Text/autor.xhtml', 'Text/info.xhtml',
-                      'Text/sinopsis.xhtml', 'Text/notas.xhtml', 'Text/titulo.xhtml',
-                      'Text/apendices.xhtml', 'Text/anotaciones.xhtml',
-                      'Text/agradecimientos.xhtml', 'Text/map_001.xhtml',
-                      'Text/map_001.xhtml', 'Text/map_002.xhtml', 'Text/map_003.xhtml',
-                      'Text/map_004.xhtml', 'Text/map_005.xhtml', 'Text/map_001.xhtml',
-                      'Text/capi_atk.xhtml', 'Text/Bibliografia.xhtml', 'Text/GuiadelLector.xhtml',
-                      'Text/Info.xhtml', 'Text/Titulo.xhtml', 'Text/Sinopsis.xhtml',
-                      'Text/Prologo.xhtml', 'Text/Notas.xhtml', 'Text/Cubierta.xhtml',
-                      'Text/Autor.xhtml']
+    query = Book.query.filter_by(title=title).first()
+    if not query:
+        text = []
+        exception_list = ['Text/cubierta.xhtml', 'Text/autor.xhtml', 'Text/info.xhtml',
+                          'Text/sinopsis.xhtml', 'Text/notas.xhtml', 'Text/titulo.xhtml',
+                          'Text/apendices.xhtml', 'Text/anotaciones.xhtml',
+                          'Text/agradecimientos.xhtml', 'Text/map_001.xhtml',
+                          'Text/map_001.xhtml', 'Text/map_002.xhtml', 'Text/map_003.xhtml',
+                          'Text/map_004.xhtml', 'Text/map_005.xhtml', 'Text/map_001.xhtml',
+                          'Text/capi_atk.xhtml', 'Text/Bibliografia.xhtml', 'Text/GuiadelLector.xhtml',
+                          'Text/Info.xhtml', 'Text/Titulo.xhtml', 'Text/Sinopsis.xhtml',
+                          'Text/Prologo.xhtml', 'Text/Notas.xhtml', 'Text/Cubierta.xhtml',
+                          'Text/Autor.xhtml']
 
-    for item in book.get_items():
-        if item.get_type() == ebooklib.ITEM_DOCUMENT:
-            if item.get_name() not in exception_list:
-                chapters.append(item.get_name())
+        for item in book.get_items():
+            if item.get_type() == ebooklib.ITEM_DOCUMENT:
+                if item.get_name() not in exception_list:
+                    text.append(item.get_content())
 
-    item_book = random_choice(chapters)
-    for item in book.get_items():
-        if item.get_type() == ebooklib.ITEM_DOCUMENT:
-            if item.get_name() == item_book:
-                text.append(item.get_content())
-    return text
+        book = Book(title=title, author=author, content=to_text(text))
+        db.session.add(book)
+        db.session.commit()
+        print('Guardado')
+    else:
+<<<<<<< HEAD
+        print('Already in')
+=======
+        str = nltk.sent_tokenize(query.content)
+        ret = random.choice(str)
+        print(ret)
+        return ret
+>>>>>>> 7e17e790a678b85226380fc293fb72c556b37c6d
 
 
-def parserdata(chap):
+def charge_books():
+    books = get_ebooks()
+    for book in books:
+        print(book)
+        to_database = epub_to_html(book)
+        print('Yay!')
+
+
+def to_text(html):
     """
     Decode data in UTF-8 format and get all <p> tag.
     """
-    parsed = []
-    str = b"".join(chap)
-    decoder = str.decode('utf-8')
-    soup = BeautifulSoup(decoder, 'html.parser')
-    for tag in soup.find_all(re.compile("p")):
-        parsed.append(tag.string)
-    return parsed
+    to_parse = []
+    str = b''.join(html)
+    # decoder = str.decode('utf-8')
+    soup = BeautifulSoup(str, 'html.parser')
+    for tag in soup.find_all(("p")):
+<<<<<<< HEAD
+        if len(tag.text) > 4:
+            to_parse.append(tag.text)
+=======
+        to_parse.append(tag.text)
+>>>>>>> 7e17e790a678b85226380fc293fb72c556b37c6d
+
+    parsed = list(filter(None, to_parse))
+    joined = ''.join(parsed)
+    return joined
 
 
-def epub_to_text(epub_path):
-    """Call function to get plain text."""
-    chapters = epub_to_html(epub_path)
-    text = parserdata(chapters)
-    return text
-
-
-def random_choice(text):
-    try:
-        return random.choice(text)
-    except:
-        return phrase(epub_to_text(get_ebooks()))
-
-
-def check_data(data):
-    text = random_choice(data)
-    while text is None:
-        return check_data(data)
-    return text
-
-
-def phrase(str):
-    checked_data = check_data(str)
-    o = nltk.sent_tokenize(checked_data)
-    k = random.choice(o)
-    if len(k) > 50:
-        return [k, author]
+def phrase(book):
+    text = nltk.sent_tokenize(book.content)
+    text_r = random.choice(text)
+    author = book.author
+    if len(text) > 50:
+        return [text_r, author]
     else:
-        return phrase(epub_to_text(get_ebooks()))
+        return phrase(random_book())

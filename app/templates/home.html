@@ -20,7 +20,7 @@
         $(document).ready(function() {
             $(document).submit(function (event) {
                     event.preventDefault()
-                    $.get("/ajax/", function (data) {
+                    $.get("/show/", function (data) {
                         $( "#box" ).hide().html( data ).fadeIn('500');
                 });
             });
