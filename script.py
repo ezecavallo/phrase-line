@@ -118,7 +118,6 @@ def to_text(html):
 
         if len(tag.text) > 4:
             to_parse.append(tag.text)
-        to_parse.append(tag.text)
 
     parsed = list(filter(None, to_parse))
     joined = ''.join(parsed)

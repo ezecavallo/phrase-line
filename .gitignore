@@ -137,6 +137,7 @@ dmypy.json
 
 # Credentials
 *.json
+config.py
 
 # Databases
 *.db

@@ -1,56 +1,62 @@
-from __future__ import print_function
-import pickle
-import os.path
-from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
-
-# If modifying these scopes, delete the file token.pickle.
+from pydrive2.auth import GoogleAuth
+from pydrive2.drive import GoogleDrive
+from oauth2client.service_account import ServiceAccountCredentials
+import os
 
 
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
+def download_books():
 
-gauth = GoogleAuth()
-gauth.LocalWebserverAuth()  # Creates local webserver and auto handles authentication.
+    gauth = GoogleAuth()
+    scope = ['https://www.googleapis.com/auth/drive']
+    gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name('key.json', scope)
+    # gauth.DEFAULT_SETTINGS['client_config_file'] = "client_secrets.json"
+    # Try to load saved client credentials
+    # gauth.LoadServiceConfigSettings()
+    # gauth.LoadCredentialsFile("mycreds.txt")
+    if gauth.credentials is None:
+        # Authenticate if they're not there
+        gauth.LocalWebserverAuth()
+    elif gauth.access_token_expired:
+        # Refresh them if expired
+        gauth.Refresh()
+    else:
+        # Initialize the saved creds
+        # gauth.Authorize()
+        gauth.ServiceAuth()
+    # Save the current credentials to a file
+    gauth.SaveCredentialsFile("mycreds.txt")
+    # gauth.LocalWebserverAuth()  # Creates local webserver and auto handles authentication.
 
-drive = GoogleDrive(gauth)
+    drive = GoogleDrive(gauth)
 
-# Directory
-directory = "books-test"
+    # Directory
+    directory = "books-test"
 
-# Parent Directory path
-parent_dir = os.getcwd()
+    # Parent Directory path
+    parent_dir = os.getcwd()
 
-# Path
-path = os.path.join(parent_dir, directory)
+    # Path
+    path = os.path.join(parent_dir, directory)
 
-folder_list = drive.ListFile(
-    {'q': "'15P0mhudJLIwYBnZNDpUsL0RevxzQd_gb' in parents and trashed=false"}).GetList()
-# for file1 in file_list:
-#   print('title: %s, id: %s' % (file1['title'], file1['id']))
-mimetypes = {
-    # Drive Document files as MS Word files.
-    'application/vnd.google-apps.folder': 'application/epub+zip',
+    folder_list = drive.ListFile(
+        {'q': "'15P0mhudJLIwYBnZNDpUsL0RevxzQd_gb' in parents and trashed=false"}).GetList()
+    # for file1 in file_list:
+    #   print('title: %s, id: %s' % (file1['title'], file1['id']))
 
-    # Drive Sheets files as MS Excel files.
-    'application/vnd.google-apps.spreadsheet': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    if not os.path.exists(path):
+        os.mkdir(path)
 
-    # etc.
-}
-
-# os.mkdir(path)
-for folder in folder_list:
-    print(folder['title'])
-    folders = drive.ListFile({'q': f"'{folder['id']}' in parents and trashed=false"}).GetList()
-    for fol in folders:
-        folder = drive.ListFile({'q': f"'{fol['id']}' in parents and trashed=false"}).GetList()
-        for file in folder:
-            # print(file['mimeType'])
-            file.GetContentFile(f"books-test/{file['title']}", mimetype='application/epub+zip')
-
-
-# file1 = drive.CreateFile({'title': 'Hello.txt'})
-# file1.Upload() # Upload the file.
-# file1.GetContentFile('Hello.txt') # Download file as 'catlove.png'.
-# print('title: %s, id: %s' % (file1['title'], file1['id']))
+    for folder in folder_list:
+        folders = drive.ListFile({'q': f"'{folder['id']}' in parents and trashed=false"}).GetList()
+        for fol in folders:
+            folder = drive.ListFile({'q': f"'{fol['id']}' in parents and trashed=false"}).GetList()
+            for file in folder:
+                if file['mimeType'] == 'application/epub+zip':
+                    if not os.path.exists(f"books-test/{file['title']}"):
+                        file.GetContentFile(
+                            f"books-test/{file['title']}", mimetype='application/epub+zip')
+                        print(f"{file['title']}")
+                    else:
+                        print(f"{file['title']} already exists.")
+                else:
+                    print('Error')

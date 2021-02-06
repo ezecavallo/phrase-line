@@ -3,7 +3,7 @@ from app import create_app
 from app.models import Book
 from app.database import db
 from script import *
-
+from quickstart import *
 
 app = create_app()
 with app.app_context():
@@ -29,6 +29,13 @@ def charge():
     return 'Finished'
 
 
+@app.route('/download-books/', methods=['GET'])
+def books_drive():
+
+    download_books()
+    return 'Finished'
+
+
 @app.route('/show/', methods=['GET'])
 def show():
     """Call phrase funtion."""
@@ -42,4 +49,4 @@ def show():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host="localhost", port=8080, debug=False)
