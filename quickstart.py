@@ -15,7 +15,7 @@ def download_books():
     # gauth.LoadCredentialsFile("mycreds.txt")
     if gauth.credentials is None:
         # Authenticate if they're not there
-        gauth.LocalWebserverAuth()
+        gauth.LocalWebserverAuth() # Creates local webserver and auto handles authentication.
     elif gauth.access_token_expired:
         # Refresh them if expired
         gauth.Refresh()
@@ -24,8 +24,7 @@ def download_books():
         # gauth.Authorize()
         gauth.ServiceAuth()
     # Save the current credentials to a file
-    gauth.SaveCredentialsFile("mycreds.txt")
-    # gauth.LocalWebserverAuth()  # Creates local webserver and auto handles authentication.
+    # gauth.SaveCredentialsFile("mycreds.txt")
 
     drive = GoogleDrive(gauth)
 
@@ -40,12 +39,12 @@ def download_books():
 
     folder_list = drive.ListFile(
         {'q': "'15P0mhudJLIwYBnZNDpUsL0RevxzQd_gb' in parents and trashed=false"}).GetList()
-    # for file1 in file_list:
-    #   print('title: %s, id: %s' % (file1['title'], file1['id']))
 
     if not os.path.exists(path):
         os.mkdir(path)
 
+    # Search for files
+    # To-do list: automatic remove files after get in database.
     for folder in folder_list:
         folders = drive.ListFile({'q': f"'{folder['id']}' in parents and trashed=false"}).GetList()
         for fol in folders:
